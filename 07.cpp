@@ -82,12 +82,57 @@ void p3() {
   }
 }
 
+// 11 EdxC
+
+namespace EdxC{
+  
+  struct Node {
+    int v;
+    int line;
+    int ind;
+    Node(int val, int line, int ind) : v(val), line(line), ind(ind) {}
+    Node(Node&&);
+    Node& operator=(Node&& n) {
+      v = n.v;
+      return *this;
+    }
+  };
+
+  Node::Node(Node&& n) : v{n.v} {}
+  // Node::Node& operator=(Node&& n) {
+  //   v = n.v;
+  //   return *this;
+  // }
+
+
+  int main() {
+    char command;
+
+    Node a(1,2,3), b(3,4,5);
+    swap(a, b);
+    cout << a.v << a.line << b.v << b.line;
+
+    int n, v;
+    std::cin >> n;
+    for (int i = 0; i < n; ++i) {
+      std::cin >> command;
+      switch (command) {
+        case 'A':
+          std::cout << 'a';
+        case 'B':
+          std::cout << 'b';
+      }
+    }
+  }
+
+}
 
 
 
 int main(int argc, char const *argv[])
 {
-  p3();  
     
+    using EdxC::main;
+    main(); 
     return 0;
 }
