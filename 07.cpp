@@ -12,8 +12,10 @@
 using namespace std;
 #define forn(i, n) for(int i = 0; i < n; ++i)
 
-// 10072018 EdxC
+// 10 EdxC
 // 11 CF #490 d3
+namespace CF490 {
+
 void p1() {
   int n, k, s = 0;
   cin >> n >> k;
@@ -82,7 +84,8 @@ void p3() {
   }
 }
 
-// 11 EdxC
+}
+// 11 EdxC, 12
 
 namespace EdxC{
   
@@ -91,26 +94,90 @@ namespace EdxC{
     int line;
     int ind;
     Node(int val, int line, int ind) : v(val), line(line), ind(ind) {}
+    Node() : v(-1) {}
     Node(Node&&);
-    Node& operator=(Node&& n) {
-      v = n.v;
-      return *this;
-    }
+    Node(const Node&) = default;
+    Node& operator=(Node&& n);
+  };
+
+  class PQ {
+    public:
+    vector<Node> qu;
+    vector<Node> hs;
+    // int cur_line;
+    
+      PQ(int lines) : hs(lines) {} 
+      Node parent(const Node&);
+      Node left(Node);
+      Node right(Node);
+      void sift_d(Node);
+      void sift_u(Node);
+      void add(int line, int val);
+      void pop_min();
+      void change_v(int line, int newv);
   };
 
   Node::Node(Node&& n) : v{n.v} {}
-  // Node::Node& operator=(Node&& n) {
-  //   v = n.v;
-  //   return *this;
-  // }
+  Node& Node::operator=(Node&& n) {
+    v = n.v;
+    return *this;
+  }
+
+  Node PQ::parent(const Node& node) {
+    return qu[node.ind / 2];
+  }
+
+  Node PQ::left(Node node) {
+    return qu[2 * node.ind - 1];
+  }
+
+  Node PQ::right(Node node) {
+    return qu[2 * node.ind];
+  }
+
+  void PQ::add(int line, int val) {
+    hs[line] = Node(val, line, qu.size());
+    qu.push_back(hs[line]);
+    sift_u(hs[line]);
+  }
+
+  void PQ::change_v(int line, int val) {
+    hs[line].v = val;
+    sift_d(hs[line]);
+    sift_u(hs[line]);
+  }
+
+  void PQ::sift_d(Node node) {
+    int ind = node.ind;
+    if (node.v < parent(node).v) {
+      Node n = parent(node);
+      swap(node, n);
+    }
+    sift_d(qu[ind]); 
+  }
+
+  void PQ::sift_u(Node node) {
+    int ind = node.ind;
+    if (node.v < parent(node).v) {
+      Node n = parent(node);
+      swap(node, n);
+    }
+    sift_u(node); 
+  }
 
 
   int main() {
     char command;
 
     Node a(1,2,3), b(3,4,5);
-    swap(a, b);
-    cout << a.v << a.line << b.v << b.line;
+    PQ pq(2);
+    pq.add(1, 1);
+    pq.add(2, -1);
+    pq.add(3, -4);
+    forn(i, 3) { cout << pq.qu[i].v; }
+    Node nq = pq.parent(pq.qu[0]);
+    swap(pq.qu[1], nq);
+    cout << pq.qu[1].v << a.line << b.v << b.line;
 
     int n, v;
     std::cin >> n;
@@ -128,11 +195,71 @@ namespace EdxC{
 }
 
 
+// 12 CF #481 d3 http://codeforces.com/contest/978/problem/C
+namespace CF481 {
+  void p1() {
+    int n, v;
+    cin >> n;
+    vector<int> vec(n), ht(1001), nv;
+    forn(i, n) {
+      cin >> vec[i];
+    }
+    reverse(vec.begin(), vec.end());
+    forn(i, n) {
+      if (!ht[vec[i]]) {
+        nv.push_back(vec[i]);
+        ht[vec[i]] = 1;
+      }
+    }
+    reverse(nv.begin(), nv.end());
+    cout << nv.size() << '\n';
+    forn(i,nv.size()) {
+      cout << nv[i] << ' ';
+    }
+  }
+
+  void p2() {
+    int n, x_c = 0, rm_c = 0;
+    string st;
+    cin >> n >> st;
+    forn (i, n) {
+      if (st[i] == 'x' && x_c == 2) {
+        ++rm_c;
+      } else if (st[i] == 'x') {
+        ++x_c;
+      } else {
+        x_c = 0;
+      }
+    }
+    cout << rm_c;
+  }
+
+  void p3() {
+    int64_t n, r, v;
+    cin >> n >> r;
+    vector<int64_t> vec(1);
+    forn(i, n) {
+      cin >> v;
+      vec.push_back(vec.back() + v);
+    }
+    forn(i, r) {
+      cin >> v;
+      vector<int64_t>::iterator indit = lower_bound(vec.begin(), vec.end(), v);
+      int ind = indit - vec.begin();
+      cout << ind << ' ' << v - *(indit - 1) << '\n';
+    }
+  }
+}
+
+
+
 
 int main(int argc, char const *argv[])
 {
     
-    using EdxC::main;
-    main(); 
+    // using namespace CF481;
+    // p3();
+    EdxC::main();
+
     return 0;
 }
