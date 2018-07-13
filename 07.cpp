@@ -251,15 +251,65 @@ namespace CF481 {
   }
 }
 
+// 13 CF #479 d3 http://codeforces.com/contest/977
+namespace CF479 {
+  void p1() {
+    int n, k;
+    cin >> n >> k;
+    forn(i, k) {
+      if (n % 10) {
+        --n;
+      } else {
+        n /= 10;
+      }
+    }
+    cout << n;
+  }
 
+  void p2() {
+    int n;
+    string s;
+    cin >> n >> s;
+    map<string, int> hs;
+    // cout << s[1] + s[1 + 1];
+    forn(i, n - 1) {
+      // string st = string(s[i]) + s[i + 1];
+      hs[s.substr(i, 2)] += 1;
+    }
+    auto x = max_element(hs.begin(), hs.end(), 
+              [](pair<string, int> a, pair<string, int> b) {
+                return a.second < b.second;
+              }); 
+    cout << x->first;
+  }
+
+  void p3() {
+    int n, k;
+    cin >> n >> k;
+    vector<int> vec(n);
+    forn(i, n) {
+      cin >> vec[i];
+    }
+    if (!k) {cout << 0; return;}
+    --k;
+    
+    sort(vec.begin(), vec.end());
+    if (k + 1 < n && vec[k] == vec[k + 1]) {
+      cout << -1;
+    } else {
+      cout << vec[k];
+    }
+
+  }
+}
 
 
 int main(int argc, char const *argv[])
 {
     
-    // using namespace CF481;
-    // p3();
-    EdxC::main();
+    using namespace CF479;
+    p3();
+    //EdxC::main();
 
     return 0;
 }
