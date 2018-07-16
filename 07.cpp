@@ -8,6 +8,7 @@
 #include <cmath>
 #include <queue>
 #include <unordered_map>
+#include <unordered_set>
 
 using namespace std;
 #define forn(i, n) for(int i = 0; i < n; ++i)
@@ -85,7 +86,7 @@ void p3() {
 }
 
 }
-// 11 EdxC, 12
+// 11 EdxC, 12, 13
 
 namespace EdxC{
   
@@ -149,15 +150,21 @@ namespace EdxC{
 
   void PQ::sift_d(Node node) {
     int ind = node.ind;
-    if (node.v < parent(node).v) {
-      Node n = parent(node);
-      swap(node, n);
+    Node min_n;
+    if (left(node).v > right(node).v) {
+      min_n = right(node);
+    } else {
+      min_n = right(node);
     }
+    if (node.v > min_n.v ) {
+      // Node n = parent(node);
+      swap(node, min_n);
+    } 
     sift_d(qu[ind]); 
   }
 
   void PQ::sift_u(Node node) {
-    int ind = node.ind;
+    if (node.ind == 0) { return;}
     if (node.v < parent(node).v) {
       Node n = parent(node);
       swap(node, n);
@@ -170,7 +177,7 @@ namespace EdxC{
     char command;
 
     Node a(1,2,3), b(3,4,5);
-    PQ pq(2);
+    PQ pq(3);
     pq.add(1, 1);
     pq.add(2, -1);
     pq.add(3, -4);
@@ -190,6 +197,12 @@ namespace EdxC{
           std::cout << 'b';
       }
     }
+  }
+
+
+  // EdxC 13
+  void p7() {
+
   }
 
 }
@@ -290,10 +303,24 @@ namespace CF479 {
     forn(i, n) {
       cin >> vec[i];
     }
-    if (!k) {cout << 0; return;}
+
+    sort(vec.begin(), vec.end());
+    if (!k) {
+      if (vec[0] <= 1) {
+        cout << -1;
+        return;
+      }   
+      cout << vec[0] - 1; 
+      return;
+    }
+
+    if (vec.size() < k) {
+      cout << -1;
+      return;
+    }
     --k;
     
-    sort(vec.begin(), vec.end());
+    
     if (k + 1 < n && vec[k] == vec[k + 1]) {
       cout << -1;
     } else {
@@ -303,13 +330,121 @@ namespace CF479 {
   }
 }
 
+// 14 CF http://codeforces.com/contest/1009/problem/B
+
+namespace CF47 {
+  void p1() {
+    int n, m, g = 0;
+    cin >> n >> m;
+    vector<int> a(n), c(m);
+    forn(i,n) {
+      cin >> a[i];
+    }
+    forn(i, m) {
+      cin >> c[i];
+    }
+    int j = 0;
+    forn(i, n) {
+      if (j < m && a[i] <= c[j]) {
+        ++g;
+        ++j;
+      }
+    }
+    cout << g;
+  }
+
+
+  void p2() {
+    string s;
+    cin >> s;
+    int n = s.size();
+    vector<int> a;
+    forn(i, n) {
+      a.push_back(int(s[i]) - 48);
+    }
+    reverse(a.begin(), a.end());
+    stack<int> ones;
+    int k = 0;
+    
+    
+    
+    forn(i, n - 1) {
+      if (a[i] + 1 == a[i + 1]) {
+        swap(a[i - k], a[i + 1]);
+      } else if (a[i] == a[i + 1]) {
+        ++k;
+      } else {
+        k = 0;
+      }
+    }
+
+    reverse(a.begin(), a.end());
+    forn (i, n) {
+      cout << a[i];
+    }
+    
+
+  }
+
+}
+
+// 16 EdxC 
+namespace EdxC16 {
+  void p1shit () {
+    int n; 
+    string v, av;
+    cin >> n;
+    unordered_set<string> vert;
+    forn(i, n) {
+      cin >> v >> av;
+      
+      if (vert.count(av + ", " + v)) {
+        cout << "YES";
+        return;
+      } else {
+        vert.insert(v + ", " + av);
+      }
+    }
+    cout << "NO";
+  }
+
+
+  unordered_set<int> bl_vert;
+  
+  void DFS(const vector<vector<int>>& graph, int v) {
+    bl_vert.insert(v);
+    for (auto av : graph[v]) {
+      if (bl_vert.count(av)) {
+        cout << "YES";
+        return;
+      } else {
+        DFS(graph, av);
+      }
+    }
+  }
+  
+  void p1() {
+    int n, m, v, av;
+    cin >> n, m;
+    vector<vector<int>> graph;
+    forn(i, m) {
+      cin >> v >> av;
+  //?
+    DFS(graph, v);
+    }
+  }
+
+
+}
+
 
 int main(int argc, char const *argv[])
 {
     
     using namespace CF479;
     p3();
-    //EdxC::main();
-
+    //EdxC16::p1();
+    
+    
     return 0;
 }
