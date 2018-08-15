@@ -105,13 +105,67 @@ namespace CF479 {
 
 }
 
+
+//15 CF #503 d2 http://codeforces.com/contest/1020/countdown
+namespace CF503 {
+  int hi(int fa, int a, int b) {
+    int c = min(abs(fa - a), abs(fa - b));
+    
+    return c;
+  }
+
+  void p1() {
+    int a, b, n, h, k, fa, fb, ta, tb;
+    cin >> n >> h >> a >> b >> k;
+    int arr[k][4];
+    forn(i, k) {
+      cin >> arr[i][0] >> arr[i][1] >> arr[i][2] >> arr[i][3];
+    }
+
+    forn(i, k) {
+      
+      fa = arr[i][1];
+      fb = arr[i][3];
+      int c = abs(fa - fb);
+      if (!(a <= fa && fa <= b) && !(a <= fb && fb <= b)) {
+         c = hi(fa, a,b) + hi(fb,a,b);
+         if ((max(fa, fb) > b && min(fa, fb) < a) || arr[i][0] == arr[i][2]) {
+           c = abs(fa - fb);
+         }
+      }
+      cout << abs(arr[i][2] - arr[i][0]) + c << '\n';
+    }
+  }
+
+  void f2(vector<pair<int, int> > arr, int i) {
+      while (arr[i].second) {
+        arr[i].second = 0;
+        i = arr[i].first;
+      }
+      cout << i + 1 << ' ';
+  }
+  void p2() {
+    int n;
+    cin >> n;
+    vector<pair<int, int> > arr(n, make_pair(1,1));
+    forn(i, n) {
+      cin >> arr[i].first;
+      --arr[i].first;
+    }
+    forn(i, n) {
+      f2(arr, i);
+    }
+  }
+  
+}
+
 int main(int argc, char const *argv[])
 {
     // vector<int> g[3];
     // g[2].push_back(2);
     // cout << g[2][0];
 
-    CF479::p3();
+    CF503::p2();
     //cout << ((3^4)^5);
     /* code */
     return 0;
